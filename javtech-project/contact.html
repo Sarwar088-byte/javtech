@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#203d73">
+  <meta name="description" content="Contact JavTech Infosys for project questions and support.">
+  <title>Contact | JavTech Infosys</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">JavTech</a>
+    <ul class="nav-links" id="primary-navigation">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html" aria-current="page">Contact</a></li>
+    </ul>
+    <button class="hamburger" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-navigation"><span></span><span></span><span></span></button>
+  </nav>
+  <main>
+    <header class="page-intro">
+      <p class="eyebrow">We’re here to help</p>
+      <h1>Let’s talk about what you need.</h1>
+      <p>Send a project enquiry or use the support details below. We’ll be glad to hear from you.</p>
+    </header>
+    <section class="contact-page">
+      <div class="support-panel">
+        <p class="eyebrow">Support and enquiries</p>
+        <h2>Reach the JavTech team</h2>
+        <p class="support-intro">Contact us using the details below for project questions and support.</p>
+        <div class="support-item">
+          <span class="support-label">Phone</span>
+          <p>+9779824823506</p>
+        </div>
+        <div class="support-item">
+          <span class="support-label">Email</span>
+          <p><a href="mailto:ydvsubhash088@gmail.com">ydvsubhash088@gmail.com</a></p>
+        </div>
+        <div class="support-item">
+          <span class="support-label">Address</span>
+          <p>Javtech Infosys Pvt. Ltd., Sanepa, Lalitpur, Nepal</p>
+        </div>
+        <p class="support-note">For the quickest response, include a few details about what you need help with.</p>
+      </div>
+      <form id="contactForm" class="message-form">
+        <h2>Send us a message</h2>
+        <p class="form-intro">Your email app will open with your message ready to send.</p>
+        <label for="name">Your name</label>
+        <input type="text" id="name" name="name" placeholder="Jane Smith" autocomplete="name" required>
+        <label for="email">Your email</label>
+        <input type="email" id="email" name="email" placeholder="jane@example.com" autocomplete="email" required>
+        <label for="message">How can we help?</label>
+        <textarea id="message" name="message" rows="5" placeholder="Write your message here..." required></textarea>
+        <p class="error" id="error" role="alert"></p>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary">Prepare message</button>
+      </form>
+    </section>
+  </main>
+  <footer>© 2026 JavTech Infosys <span aria-hidden="true">—</span> All Rights Reserved</footer>
+  <script src="js/script.js"></script>
+</body>
+</html>
