@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Cloudflare Wrangler
+.wrangler/
+.wrangler_config/
+.env
+.env.*
+
+# Editor / System files
+.gemini/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
