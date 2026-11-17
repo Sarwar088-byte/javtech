@@ -44,7 +44,10 @@ if (contactForm) {
         body: JSON.stringify({ ...fields, id: pendingId })
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.success !== true) throw new Error(result.error || 'Unable to send. Please try again.');
+      if (!response.ok || result.success !== true) {
+        status.textContent = result.error || 'Unable to send. Please try again.';
+        return;
+      }
       contactForm.reset();
       pendingId = undefined;
       status.textContent = 'Your message has been received. Thank you!';

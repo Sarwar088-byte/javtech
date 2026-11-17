@@ -25,7 +25,8 @@ export async function onRequest({ request, env }) {
   } catch {
     return reply({ error: 'Invalid request' }, 400);
   }
-  const { id, name, email, message } = data || {};
+  const { id, name, email, message, website } = data || {};
+  if (website) return reply({ error: 'Unable to accept this submission.' }, 400);
   if (typeof id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) ||
       typeof name !== 'string' || !name.trim() || name.length > 100 ||
       typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
@@ -33,6 +34,29 @@ export async function onRequest({ request, env }) {
     return reply({ error: 'Please provide a valid name, email and message.' }, 400);
   }
   try {
+    const existing = await env.DB.prepare('SELECT name, email, message FROM enquiries WHERE id = ?').bind(id).first();
+    if (existing) {
+      if (existing.name !== name.trim() || existing.email !== email.trim() || existing.message !== message.trim()) {
+        return reply({ error: 'Submission ID already used. Please submit again.' }, 409);
+      }
+      return reply({ success: true }, 200);
+    }
+    const ip = request.headers.get('CF-Connecting-IP');
+    if (!ip) return reply({ error: 'Unable to verify submission source.' }, 403);
+    const now = Math.floor(Date.now() / 1000);
+    const window = Math.floor(now / 600);
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip + ':' + window));
+    const clientKey = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+    const results = await env.DB.batch([
+      env.DB.prepare('DELETE FROM contact_rate_limits WHERE expires_at <= ?').bind(now),
+      env.DB.prepare('INSERT INTO contact_rate_limits (client_key, attempts, expires_at) VALUES (?, 1, ?) ON CONFLICT(client_key) DO UPDATE SET attempts = attempts + 1 WHERE attempts < 5 RETURNING attempts')
+        .bind(clientKey, (window + 1) * 600)
+    ]);
+    if (!results[1].results.length) {
+      const response = reply({ error: 'Too many messages. Please try again in ten minutes.' }, 429);
+      response.headers.set('Retry-After', String((window + 1) * 600 - now));
+      return response;
+    }
     const saved = await env.DB.prepare('INSERT INTO enquiries (id, name, email, message) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO NOTHING')
       .bind(id, name.trim(), email.trim(), message.trim()).run();
     if (saved.meta.changes === 0) {

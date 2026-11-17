@@ -56,6 +56,10 @@
         <input type="email" id="email" name="email" placeholder="jane@example.com" autocomplete="email" maxlength="254" required>
         <label for="message">How can we help?</label>
         <textarea id="message" name="message" rows="5" maxlength="5000" placeholder="Write your message here..." required></textarea>
+        <div class="spam-trap" aria-hidden="true">
+          <label for="website">Leave this field empty</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
         <p class="error" id="error" role="alert"></p>
         <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
         <button type="submit" class="btn btn-primary">Send message</button>
