@@ -1,0 +1,15 @@
+{
+  "name": "javtech-project",
+  "version": "1.0.0",
+  "description": "JavTech Infosys website",
+  "scripts": {
+    "login": "wrangler login",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name javtech-project",
+    "deploy:prod": "npm run build && wrangler pages deploy dist --project-name javtech-project --branch main",
+    "ship": "powershell -ExecutionPolicy Bypass -File .\\ship.ps1",
+    "build": "node scripts/build.cjs"
+  },
+  "devDependencies": {
+    "wrangler": "^3.114.0"
+  }
+}

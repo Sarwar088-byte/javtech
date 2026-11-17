@@ -1,0 +1,8 @@
+name = "javtech-project"
+compatibility_date = "2026-11-17"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "javtech-enquiries"
+database_id = "0e8521fc-8aa1-4d3e-8324-5eb2055fbed6"

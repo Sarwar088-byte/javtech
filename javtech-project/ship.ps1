@@ -3,12 +3,15 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+Set-Location -LiteralPath $PSScriptRoot
 
 Write-Host "=== [1/2] Syncing to GitHub (Sarwar088-byte/javtech) ===" -ForegroundColor Cyan
 git add .
+if ($LASTEXITCODE -ne 0) { throw "Git staging failed" }
 $status = git status --porcelain
 if ($status) {
     git commit -m "$Message"
+    if ($LASTEXITCODE -ne 0) { throw "Git commit failed" }
 } else {
     Write-Host "Working tree clean. Checking remote sync..." -ForegroundColor Yellow
 }
@@ -25,6 +28,7 @@ try {
 
     if ($hasSubfolder) {
         $tree = git write-tree
+        if ($LASTEXITCODE -ne 0) { throw "Git write-tree failed" }
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $psi.FileName = "git"
         $psi.Arguments = "mktree"
@@ -36,6 +40,7 @@ try {
         $p.StandardInput.Close()
         $rootTree = $p.StandardOutput.ReadToEnd().Trim()
         $p.WaitForExit()
+        if ($p.ExitCode -ne 0) { throw "Git mktree failed" }
 
         $parent = (git rev-parse origin/main 2>$null)
         if ($parent) {
@@ -43,10 +48,12 @@ try {
         } else {
             $commit = git commit-tree $rootTree -m "$Message"
         }
+        if ($LASTEXITCODE -ne 0) { throw "Git commit-tree failed" }
         git push origin "${commit}:refs/heads/main"
     } else {
         git push origin main
     }
+    if ($LASTEXITCODE -ne 0) { throw "Git push failed" }
     Write-Host "Git push to GitHub successful!" -ForegroundColor Green
 } catch {
     Write-Host "Git push warning: $_" -ForegroundColor Yellow
@@ -70,7 +77,10 @@ if (Test-Path "$PSScriptRoot\.env") {
 }
 
 try {
-    npx wrangler pages deploy . --project-name javtech-project --commit-dirty=true
+    npm run build
+    if ($LASTEXITCODE -ne 0) { throw "Build failed" }
+    npx wrangler pages deploy dist --project-name javtech-project --branch main --commit-dirty=true
+    if ($LASTEXITCODE -ne 0) { throw "Cloudflare deployment failed" }
     Write-Host "=== Deployment to Cloudflare Pages Complete! ===" -ForegroundColor Green
     Write-Host "Live at: https://javtech-project.pages.dev" -ForegroundColor Green
 } catch {
